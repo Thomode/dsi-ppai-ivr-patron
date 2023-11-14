@@ -9,8 +9,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubOpcionDTO {
-    private String nombre;
-    private int nroOrden;
-    private List<ValidacionDTO> validacionDTOS;
+public class LlamadaDTO {
+    private String nombreCliente;
+    private String categoria;
+    private String opcion;
+    private List<SubOpcionDTO> subOpcionDTOS;
 }

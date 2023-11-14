@@ -1,14 +1,15 @@
 package com.dsi.Controllers;
 
-import com.dsi.Dtos.ConfirmacionDTO;
-import com.dsi.Dtos.ValidacionDTO;
+import com.dsi.Dtos.*;
 import com.dsi.Entities.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api")
@@ -42,21 +43,21 @@ public class GestorRegistroDeRespuestaController
     }
 
     @GetMapping("datos-llamada")
-    public <T> mostrarDatosLlamada() {
+    public LlamadaDTO mostrarDatosLlamada() {
         String nombreCliente = this.llamadaCliente.getNombreClienteDeLlamada();
         String categoria = this.llamadaCliente.getCategoriaLlamada().getNombre();
         String opcion = this.llamadaCliente.getOpcionSeleccionada().getNombre();
 
-        var subOpciones = this.buscarSubOpcionYValidaciones();
-        var subOpcionesOrdenadas = this.ordenarSubOpciones(subOpciones);
+        List<SubOpcionDTO> subOpciones = this.buscarSubOpcionYValidaciones();
+        List<SubOpcionDTO> subOpcionesOrdenadas = this.ordenarSubOpciones(subOpciones);
 
-        return new
-        {
-            nombreCliente = nombreCliente,
-            categoria = categoria,
-            opcion = opcion,
-            subOpciones = subOpcionesOrdenadas
-        };
+        LlamadaDTO llamadaDTO = new LlamadaDTO();
+        llamadaDTO.setNombreCliente(nombreCliente);
+        llamadaDTO.setCategoria(categoria);
+        llamadaDTO.setOpcion(opcion);
+        llamadaDTO.setSubOpcionDTOS(subOpcionesOrdenadas);
+
+        return llamadaDTO;
     }
 
     private void tomarOpcionOperador()
@@ -207,47 +208,50 @@ public class GestorRegistroDeRespuestaController
         this.fechaHoraActual = LocalDateTime.now();
     }
 
-    public <T> buscarSubOpcionYValidaciones()
+    public List<SubOpcionDTO> buscarSubOpcionYValidaciones()
     {
-        var subOpciones = new ArrayList<T>();
+        List<SubOpcionDTO> subOpciones = new ArrayList<SubOpcionDTO>();
 
         for (SubOpcionLlamada subOpcion : this.llamadaCliente.getSubOpcionSeleccionada())
         {
-            var validaciones = new ArrayList<T>();
+            List<ValidacionDTO> validaciones = new ArrayList<ValidacionDTO>();
 
             for (Validacion validacionRequerida : subOpcion.getValidacionRequerida())
             {
-                var opcionesV = new ArrayList<T>();
+                List<OpcionValidacionDTO> opcionesV = new ArrayList<OpcionValidacionDTO>();
 
                 for (OpcionValidacion opcionValidacion : validacionRequerida.getOpcionValidacion())
                 {
-                    opcionesV.add(new
-                    {
-                        descripcion = opcionValidacion.getDescripcion()
-                    });
+                    OpcionValidacionDTO validacionDTO = new OpcionValidacionDTO();
+                    validacionDTO.setDescripcion(opcionValidacion.getDescripcion());
+
+                    opcionesV.add(validacionDTO);
                 }
 
-                validaciones.add(new
-                {
-                    nombre = validacionRequerida.getMensajeValidacion(),
-                    opcionesValidacion = opcionesV
-                });
+                ValidacionDTO validacionDTO = new ValidacionDTO();
+                validacionDTO.setNombre(validacionRequerida.getMensajeValidacion());
+                validacionDTO.setOpcionValidacionDTOS(opcionesV);
+
+                validaciones.add(validacionDTO);
             }
 
-            subOpciones.Add(new
-            {
-                nombre = subOpcion.getNombre(),
-                nroOrden = subOpcion.getNroOrden(),
-                validaciones = validaciones
-            });
+            SubOpcionDTO subOpcionDTO = new SubOpcionDTO();
+            subOpcionDTO.setNombre((subOpcion.getNombre()));
+            subOpcionDTO.setNroOrden(subOpcion.getNroOrden());
+            subOpcionDTO.setValidacionDTOS(validaciones);
+
+            subOpciones.add(subOpcionDTO);
 
         }
         return subOpciones;
     }
 
-    public <T> ordenarSubOpciones(List<T> subOpcionesYValidaciones)
+    public List<SubOpcionDTO> ordenarSubOpciones(List<SubOpcionDTO> subOpcionesYValidaciones)
     {
-        return subOpcionesYValidaciones.OrderBy(sub => sub.nroOrden).ToArray();
+        return subOpcionesYValidaciones
+                .stream()
+                .sorted(Comparator.comparingInt(SubOpcionDTO::getNroOrden))
+                .collect(Collectors.toList());
     }
 
     public void ingresarRespuestasValidaciones()
@@ -256,7 +260,7 @@ public class GestorRegistroDeRespuestaController
     }
 
     @PostMapping("validacion")
-    public boolean tomarRespuestaValidacion(@RequestBody ValidacionDTO validacion)
+    public boolean tomarRespuestaValidacion(@RequestBody ValidacionesDTO validacion)
     {
         String descripcion = validacion.getDescripcion();
         return this.validarRespuestaIngresada(descripcion);
@@ -273,7 +277,7 @@ public class GestorRegistroDeRespuestaController
     }
 
     @PostMapping("descripcion-operador")
-    public boolean tomarDescripcionRespuesta(@RequestBody ValidacionDTO operador)
+    public boolean tomarDescripcionRespuesta(@RequestBody ValidacionesDTO operador)
     {
         boolean esValido = false;
 
@@ -305,7 +309,7 @@ public class GestorRegistroDeRespuestaController
     }
 
     @PostMapping("accion-requerida")
-    public boolean tomarAccionRequerida(@RequestBody ValidacionDTO accion)
+    public boolean tomarAccionRequerida(@RequestBody ValidacionesDTO accion)
     {
         boolean esValido = false;
 
