@@ -1,12 +1,7 @@
 package com.dsi.Entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 // hola
 @Data
@@ -15,8 +10,15 @@ import lombok.Setter;
 @Table(name = "OpcionValidacion")
 @Getter
 @Setter
+@AllArgsConstructor
 public class OpcionValidacion
 {
+
+    @Id
+    @Column(name = "idOpcionValidacion")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer idOpcionValidacion;
+
     @Column(name = "correcta")
     private boolean correcta;
 

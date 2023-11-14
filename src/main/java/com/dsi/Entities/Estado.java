@@ -1,12 +1,7 @@
 package com.dsi.Entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Data
 @Entity
@@ -14,8 +9,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "Estado")
+@AllArgsConstructor
 public class Estado
 {
+
+    @Id
+    @Column(name = "idEstado")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer idEstado;
+
     @Column(name = "nombre")
     private String nombre;
 

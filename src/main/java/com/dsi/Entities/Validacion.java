@@ -1,12 +1,7 @@
 package com.dsi.Entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 
@@ -16,8 +11,15 @@ import java.util.List;
 @Table(name = "Validacion")
 @Getter
 @Setter
+@AllArgsConstructor
 public class Validacion
 {
+    @Id
+    @Column(name = "idValidacion")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer idValidacion;
+
+
     @Column(name = "audioMensajeValidacion")
     private String audioMensajeValidacion;
 

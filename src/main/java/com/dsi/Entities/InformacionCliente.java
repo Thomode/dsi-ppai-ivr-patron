@@ -1,11 +1,23 @@
 package com.dsi.Entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Table(name = "InformacionCliente" )
+@Data
+@Entity
+@NoArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
 public class InformacionCliente
 {
+
+    @Id
+    @Column(name = "idInformacionCliente")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer idInformacionCliente;
+
     @Column(name = "datoAValidar")
     private String datoAValidar;
 

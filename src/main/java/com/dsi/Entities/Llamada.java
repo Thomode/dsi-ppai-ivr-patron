@@ -1,14 +1,36 @@
 package com.dsi.Entities;
 
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Table(name = "Llamada" )
+@Data
+@Entity
+@NoArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
 public class Llamada
 {
+    @Id
+    @Column(name = "idLlamada")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer idLlamada;
+
+    @Column(name = "descripcionOperador")
     private String descripcionOperador = "";
+
+    @Column(name = "detalleAccionRequerida")
     private String detalleAccionRequerida = "";
+
+    @Column(name = "duracion")
     private int duracion = 0;
+
+
     private List<CambioEstado> cambiosEstados;
     private Cliente cliente;
     private OpcionLlamada opcionSeleccionada;

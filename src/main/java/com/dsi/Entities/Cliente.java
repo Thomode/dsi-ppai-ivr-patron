@@ -1,10 +1,7 @@
 package com.dsi.Entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,8 +11,14 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "Cliente")
+@AllArgsConstructor
 public class Cliente
 {
+    @Id
+    @Column(name = "idCliente")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer idCliente;
+
 
     @Column(name = "dni")
     private int dni;

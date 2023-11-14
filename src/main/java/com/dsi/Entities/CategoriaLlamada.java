@@ -1,9 +1,6 @@
 package com.dsi.Entities;
 
-import jakarta.persistence.Access;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Data
@@ -12,8 +9,15 @@ import lombok.*;
 @Getter
 @Setter
 @Table(name = "CategoriaLlamada")
+@AllArgsConstructor
 public class CategoriaLlamada
 {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "idCategoriaLlamada")
+    private Integer idCategoriaLlamada;
+
+
     @Column(name = "audioMensajeOpciones")
     private String audioMensajeOpciones;
 

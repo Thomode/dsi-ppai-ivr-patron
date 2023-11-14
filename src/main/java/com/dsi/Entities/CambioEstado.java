@@ -12,8 +12,14 @@ import java.util.Date;
 @Table(name = "CambioEstado")
 @Getter
 @Setter
+@AllArgsConstructor
 public class CambioEstado
 {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "idCambioEstado")
+    private Integer idCambioEstado;
+
     @Column(name = "fechaHoraInicio")
     private LocalDateTime fechaHoraInicio;
 

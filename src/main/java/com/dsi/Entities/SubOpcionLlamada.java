@@ -1,10 +1,7 @@
 package com.dsi.Entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +10,18 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Table(name = "SubOpcionLlamada")
+@Getter
+@Setter
+@AllArgsConstructor
 public class SubOpcionLlamada
 {
+
+    @Id
+    @Column(name = "idSubOpcionLlamada")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer idSubOpcionLlamada;
+
+
     @Column(name = "nombre")
     private String nombre;
 
