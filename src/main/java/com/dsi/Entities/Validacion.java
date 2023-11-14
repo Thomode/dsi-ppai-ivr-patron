@@ -1,12 +1,32 @@
 package com.dsi.Entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.List;
 
+@Data
+@Entity
+@NoArgsConstructor
+@Table(name = "Validacion")
+@Getter
+@Setter
 public class Validacion
 {
+    @Column(name = "audioMensajeValidacion")
     private String audioMensajeValidacion;
+
+    @Column(name = "nombre")
     private String nombre;
+
+    @Column(name = "nroOrden")
     private int nroOrden;
+
     private List<OpcionValidacion> opcionValidacion;
 
     public Validacion(String audioMensajeValidacion, String nombre, int nroOrden, List<OpcionValidacion> opcionValidacion)

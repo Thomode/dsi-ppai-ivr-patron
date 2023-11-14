@@ -1,11 +1,24 @@
 package com.dsi.Entities;
 
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.Date;
 
+@Data
+@Entity
+@NoArgsConstructor
+@Table(name = "CambioEstado")
+@Getter
+@Setter
 public class CambioEstado
 {
+    @Column(name = "fechaHoraInicio")
     private LocalDateTime fechaHoraInicio;
+
+    @ManyToOne
+    @JoinColumn(name = "estado")
     private Estado estado;
 
     public CambioEstado(LocalDateTime fechaHoraInicio, Estado estado)

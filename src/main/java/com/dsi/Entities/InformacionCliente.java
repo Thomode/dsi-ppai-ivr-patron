@@ -1,8 +1,14 @@
 package com.dsi.Entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
+
+@Table(name = "InformacionCliente" )
 public class InformacionCliente
 {
+    @Column(name = "datoAValidar")
     private String datoAValidar;
+
     private Validacion validacion;
     private OpcionValidacion opcionCorrecta;
 

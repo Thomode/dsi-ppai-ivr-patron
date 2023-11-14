@@ -1,12 +1,27 @@
 package com.dsi.Entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
+@Entity
+@NoArgsConstructor
+@Table(name = "SubOpcionLlamada")
 public class SubOpcionLlamada
 {
+    @Column(name = "nombre")
     private String nombre;
+
+    @Column(name = "nroOrden")
     private int nroOrden;
+
+
     private List<Validacion> validacionRequerida = new ArrayList<Validacion>();
 
     public SubOpcionLlamada(String nombre, int nroOrden, List<Validacion> validacionRequerida)

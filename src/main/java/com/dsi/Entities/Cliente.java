@@ -1,12 +1,33 @@
 package com.dsi.Entities;
 
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@Entity
+@Getter
+@Setter
+@Table(name = "Cliente")
 public class Cliente
 {
+
+    @Column(name = "dni")
     private int dni;
+
+    @Column(name = "nombreCompleto")
     private String nombreCompleto;
+
+    @Column(name = "nroCelular")
     private int nroCelular;
+
+    @OneToMany
+    @JoinColumn(name = "info")
     private List<InformacionCliente> info;
 
     public Cliente(int dni, String nombreCompleto, int nroCelular, List<InformacionCliente> info)
