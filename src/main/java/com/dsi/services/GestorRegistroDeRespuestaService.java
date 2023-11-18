@@ -2,7 +2,6 @@ package com.dsi.services;
 
 import com.dsi.Dtos.*;
 import com.dsi.Entities.*;
-import com.dsi.patterns.*;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class GestorRegistroDeRespuestaService implements IAgregado {
+public class GestorRegistroDeRespuestaService{
     private List<Llamada> llamadas;
     private Llamada llamadaCliente;
     private LocalDateTime fechaHoraActual;
@@ -365,20 +364,5 @@ public class GestorRegistroDeRespuestaService implements IAgregado {
     public void finCU()
     {
 
-    }
-
-    @Override
-    public IIterador crearIteradorSubOpcion(List<Object> elementos) {
-        return new IteradorSubOpcion(elementos);
-    }
-
-    @Override
-    public IIterador crearIteradorOpcionValidacion(List<Object> elementos) {
-        return new IteradorOpcionValidacion(elementos);
-    }
-
-    @Override
-    public IIterador crearIteradorValidacion(List<Object> elementos) {
-        return new IteradorValidacion(elementos);
     }
 }
