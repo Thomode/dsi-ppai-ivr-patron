@@ -1,11 +1,30 @@
 package com.dsi.Entities;
 
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.Date;
 
+@Data
+@Entity
+@NoArgsConstructor
+@Table(name = "CambioEstado")
+@Getter
+@Setter
+@AllArgsConstructor
 public class CambioEstado
 {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "idCambioEstado")
+    private Integer idCambioEstado;
+
+    @Column(name = "fechaHoraInicio")
     private LocalDateTime fechaHoraInicio;
+
+    @ManyToOne
+    @JoinColumn(name = "estado")
     private Estado estado;
 
     public CambioEstado(LocalDateTime fechaHoraInicio, Estado estado)
@@ -21,13 +40,13 @@ public class CambioEstado
 
     public boolean esEstadoInicial()
     {
-        return estado.esIniciada();
+        return this.estado.esIniciada();
     }
 
     // cambiar nombre en el diagrama
     public boolean esEstadoFinalizada()
     {
-        return estado.esFinalizada();
+        return this.estado.esFinalizada();
     }
 
     public String getNombreEstado()

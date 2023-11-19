@@ -1,28 +1,66 @@
 package com.dsi.Entities;
 
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Llamada
-{
-    private String descripcionOperador = "";
-    private String detalleAccionRequerida = "";
-    private int duracion = 0;
-    private List<CambioEstado> cambiosEstados;
-    private Cliente cliente;
-    private OpcionLlamada opcionSeleccionada;
-    private List<SubOpcionLlamada> subOpcionSeleccionada;
-    private CategoriaLlamada categoriaLlamada;
-    private Accion accionRequerida = null;
+@Table(name = "Llamada" )
+@Data
+@Entity
+@NoArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
+public class Llamada {
+    @Id
+    @Column(name = "idLlamada")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer idLlamada;
 
-    public Llamada(Cliente cliente, List<CambioEstado> cambiosEstados, CategoriaLlamada categoriaLlamada, OpcionLlamada opcionSeleccionada, List<SubOpcionLlamada> subOpcionSeleccionada)
+    @Column(name = "descripcionOperador")
+    private String descripcionOperador = "";
+
+    @Column(name = "detalleAccionRequerida")
+    private String detalleAccionRequerida = "";
+
+    @Column(name = "duracion")
+    private int duracion = 0;
+
+    @ManyToMany
+    @JoinColumn(name = "cambiosEstados")
+    private List<CambioEstado> cambiosEstados;
+
+    @ManyToOne
+    @JoinColumn(name = "cliente")
+    private Cliente cliente;
+
+    @ManyToOne
+    @JoinColumn(name = "opcionSeleccionada")
+    private OpcionLlamada opcionSeleccionada;
+
+    @ManyToMany
+    @JoinColumn(name = "subOpcionSeleccionada")
+    private List<SubOpcionLlamada> subOpcionSeleccionada;
+
+    @ManyToOne
+    @JoinColumn(name = "categoriaLlamada")
+    private CategoriaLlamada categoriaLlamada;
+
+    @ManyToOne
+    @JoinColumn(name = "accionRequerida")
+    private Accion accionRequerida;
+
+    public Llamada(Cliente cliente, List<CambioEstado> cambiosEstados, CategoriaLlamada categoriaLlamada, OpcionLlamada opcionSeleccionada, List<SubOpcionLlamada> subOpcionSeleccionada, Accion accionRequerida)
     {
         this.cliente = cliente;
         this.cambiosEstados = cambiosEstados;
         this.categoriaLlamada = categoriaLlamada;
         this.opcionSeleccionada = opcionSeleccionada;
         this.subOpcionSeleccionada = subOpcionSeleccionada;
+        this.accionRequerida = accionRequerida;
     }
 
     public int calcularDuracion()
@@ -78,7 +116,7 @@ public class Llamada
 
     public String getNombreClienteDeLlamada()
     {
-        return cliente.getNombreCompleto();
+        return this.cliente.getNombreCompleto();
     }
 
     // Que tiene que retornar (creo que para este caso de uso no aplica)
@@ -92,9 +130,9 @@ public class Llamada
         this.descripcionOperador = descripcionOperador;
     }
 
-    public void setEstadoActual(CambioEstado cambioEstado)
+    public void setEstadoActual(List<CambioEstado> cambioEstado)
     {
-        this.cambiosEstados.add(cambioEstado);
+        this.cambiosEstados = cambioEstado;
     }
 
     public void setOpcion(OpcionLlamada opcion)
@@ -111,7 +149,7 @@ public class Llamada
     {
         boolean esInicial = false;
 
-        for (CambioEstado cambio : cambiosEstados)
+        for (CambioEstado cambio : this.cambiosEstados)
         {
             if (cambio.esEstadoInicial())
             {
@@ -127,7 +165,7 @@ public class Llamada
     {
         boolean esFinalizada = false;
 
-        for (CambioEstado cambio : cambiosEstados)
+        for (CambioEstado cambio : this.cambiosEstados)
         {
             if (cambio.esEstadoFinalizada())
             {

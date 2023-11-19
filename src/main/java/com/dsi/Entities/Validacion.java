@@ -1,12 +1,36 @@
 package com.dsi.Entities;
 
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.util.List;
 
+@Data
+@Entity
+@NoArgsConstructor
+@Table(name = "Validacion")
+@Getter
+@Setter
+@AllArgsConstructor
 public class Validacion
 {
+    @Id
+    @Column(name = "idValidacion")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer idValidacion;
+
+
+    @Column(name = "audioMensajeValidacion")
     private String audioMensajeValidacion;
+
+    @Column(name = "nombre")
     private String nombre;
+
+    @Column(name = "nroOrden")
     private int nroOrden;
+
+    @ManyToMany
+    @JoinColumn(name = "opcionValidacion")
     private List<OpcionValidacion> opcionValidacion;
 
     public Validacion(String audioMensajeValidacion, String nombre, int nroOrden, List<OpcionValidacion> opcionValidacion)

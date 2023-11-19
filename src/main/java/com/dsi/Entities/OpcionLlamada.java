@@ -1,16 +1,43 @@
 package com.dsi.Entities;
 
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class OpcionLlamada
-{
+@Data
+@Entity
+@Table(name = "OpcionLlamada")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class OpcionLlamada {
+    @Id
+    @Column(name = "idOpcionLlamada")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer idOpcionLlamada;
+
+    @Column(name = "audioMensjeOpciones")
     private String audioMensajeOpciones;
+
+    @Column(name = "mensajeSubOpciones")
     private String mensajeSubOpciones;
+
+    @Column(name = "nombre")
     private String nombre;
+
+    @Column(name = "nroOrden")
     private int nroOrden;
+
+    @ManyToMany
+    @JoinColumn(name = "subOpcionLlamada")
     private List<SubOpcionLlamada> subOpcionLlamada;
-    private List<Validacion> validacionRequerida = new ArrayList<Validacion>();
+
+    @ManyToMany
+    @JoinColumn(name = "validacionRequerida")
+    private List<Validacion> validacionRequerida;
 
     public OpcionLlamada(String audioMensajeOpciones, String mensajeSubOpciones, String nombre, int nroOrden, List<SubOpcionLlamada> subOpcionLlamada)
     {

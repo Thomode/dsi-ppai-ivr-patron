@@ -1,13 +1,36 @@
 package com.dsi.Entities;
 
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
+@Entity
+@NoArgsConstructor
+@Table(name = "SubOpcionLlamada")
+@Getter
+@Setter
+@AllArgsConstructor
 public class SubOpcionLlamada
 {
+
+    @Id
+    @Column(name = "idSubOpcionLlamada")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer idSubOpcionLlamada;
+
+
+    @Column(name = "nombre")
     private String nombre;
+
+    @Column(name = "nroOrden")
     private int nroOrden;
-    private List<Validacion> validacionRequerida = new ArrayList<Validacion>();
+
+    @ManyToMany
+    @JoinColumn(name = "validacionRequerida")
+    private List<Validacion> validacionRequerida;
 
     public SubOpcionLlamada(String nombre, int nroOrden, List<Validacion> validacionRequerida)
     {
