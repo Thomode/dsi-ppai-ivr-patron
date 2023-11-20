@@ -38,7 +38,7 @@ public class InformacionCliente
 
     public boolean esInformacionCorrecta(String dato)
     {
-        return opcionCorrecta != null && opcionCorrecta.esCorrecta() && opcionCorrecta.getDescripcion() == dato;
+        return opcionCorrecta != null && opcionCorrecta.esCorrecta() && opcionCorrecta.getDescripcion().equals(dato);
     }
 
     public boolean esValidacion()

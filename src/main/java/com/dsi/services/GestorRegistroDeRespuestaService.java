@@ -6,6 +6,8 @@ import com.dsi.repositories.AccionRepository;
 import com.dsi.repositories.CambioEstadoRepository;
 import com.dsi.repositories.EstadoRepository;
 import com.dsi.repositories.LlamadaRepository;
+import com.dsi.services.cache.GestorCache;
+import com.dsi.services.cache.GestorCacheRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -20,11 +22,14 @@ public class GestorRegistroDeRespuestaService{
     private List<Llamada> llamadas;
     private Llamada llamadaCliente;
     private LocalDateTime fechaHoraActual;
-
+    private String descripcionOperador = "";
+    private String accionRequerida = "";
     private final LlamadaRepository llamadaRepository;
     private final EstadoRepository estadoRepository;
     private final AccionRepository accionRepository;
     private final CambioEstadoRepository cambioEstadoRepository;
+
+    private final GestorCacheRepository gestorCacheRepository;
 
     private List<Estado> estados = Arrays.asList(
             new Estado("Iniciada"),
@@ -32,28 +37,32 @@ public class GestorRegistroDeRespuestaService{
             new Estado("Finalizada"),
             new Estado("Cancelada")
     );
-
-
     private List<Accion> acciones = Arrays.asList (
             new Accion("Denunciar"),
             new Accion("Bloquear"),
             new Accion("Solicitar nueva tarjeta")
     );
 
-    private String descripcionOperador = "";
-    private String accionRequerida = "";
-
-    public GestorRegistroDeRespuestaService(LlamadaRepository llamadaRepository, EstadoRepository estadoRepository, AccionRepository accionRepository, CambioEstadoRepository cambioEstadoRepository)
+    @Autowired
+    public GestorRegistroDeRespuestaService(LlamadaRepository llamadaRepository, EstadoRepository estadoRepository, AccionRepository accionRepository, CambioEstadoRepository cambioEstadoRepository, GestorCacheRepository gestorCacheRepository)
     {
         this.llamadaRepository = llamadaRepository;
         this.estadoRepository = estadoRepository;
         this.accionRepository = accionRepository;
         this.cambioEstadoRepository = cambioEstadoRepository;
+        this.gestorCacheRepository = gestorCacheRepository;
     }
 
-    private void iniciar(){
+    public void iniciar(){
         this.llamadas = this.tomarOpcionOperador();
         this.llamadaCliente = this.buscarLlamada(this.llamadas);
+
+        GestorCache gestorCache = new GestorCache();
+        gestorCache.setIdGestor(1L);
+        gestorCache.setLlamadas(this.llamadas);
+        gestorCache.setLlamadaCliente(this.llamadaCliente);
+        this.gestorCacheRepository.save(gestorCache);
+
         this.getFechaHoraActual();
         this.asignarEstadoEnCurso();
     }
@@ -125,6 +134,10 @@ public class GestorRegistroDeRespuestaService{
     public void getFechaHoraActual()
     {
         this.fechaHoraActual = LocalDateTime.now();
+
+        GestorCache gestorCache = gestorCacheRepository.findById(1L).orElse(null);
+        gestorCache.setFechaHoraActual(this.fechaHoraActual);
+        this.gestorCacheRepository.save(gestorCache);
     }
 
     public List<SubOpcionDTO> buscarSubOpcionYValidaciones()
@@ -177,14 +190,12 @@ public class GestorRegistroDeRespuestaService{
 
     }
 
-    public boolean tomarRespuestaValidacion(ValidacionesDTO validacion)
-    {
+    public boolean tomarRespuestaValidacion(ValidacionesDTO validacion) {
         String descripcion = validacion.getDescripcion();
         return this.validarRespuestaIngresada(descripcion);
     }
 
-    public boolean validarRespuestaIngresada(String descripcionOpcionV)
-    {
+    public boolean validarRespuestaIngresada(String descripcionOpcionV) {
         return this.llamadaCliente.getCliente().esInformacionCorrecta(descripcionOpcionV);
     }
 
@@ -201,6 +212,10 @@ public class GestorRegistroDeRespuestaService{
         {
             this.descripcionOperador = operador.descripcion;
             esValido = true;
+
+            GestorCache gestorCache = gestorCacheRepository.findById(1L).orElse(null);
+            gestorCache.setDescripcionOperador(this.descripcionOperador);
+            gestorCacheRepository.save(gestorCache);
         }
 
         return esValido;
@@ -233,6 +248,10 @@ public class GestorRegistroDeRespuestaService{
         {
             this.accionRequerida = accion.descripcion;
             esValido = true;
+
+            GestorCache gestorCache = gestorCacheRepository.findById(1L).orElse(null);
+            gestorCache.setAccionRequerida(this.accionRequerida);
+            gestorCacheRepository.save(gestorCache);
         }
 
         return esValido;
@@ -256,15 +275,12 @@ public class GestorRegistroDeRespuestaService{
         return registroRealizado;
     }
 
-    public void registrarFinalizacionLlamada()
-    {
+    public void registrarFinalizacionLlamada() {
         this.llamadaCliente.setDescripcionOperador(this.descripcionOperador);
 
-        Accion accionRequerida = new Accion(this.accionRequerida);
+        Accion accion = this.accionRepository.findByDescripcion(this.accionRequerida);
 
-        Accion accionRequeridaSave = this.accionRepository.save(accionRequerida);
-
-        this.llamadaCliente.setAccionRequerida(accionRequeridaSave);
+        this.llamadaCliente.setAccionRequerida(accion);
 
         this.getFechaHoraActual();
         this.asignarEstadoFinalizado();
@@ -288,6 +304,7 @@ public class GestorRegistroDeRespuestaService{
                 estadoEnCurso = estado;
             }
         }
+
         CambioEstado cambio = new CambioEstado(this.fechaHoraActual, estadoEnCurso);
         CambioEstado cambioEstadoSave = this.cambioEstadoRepository.save(cambio);
 
@@ -302,5 +319,19 @@ public class GestorRegistroDeRespuestaService{
     public void finCU()
     {
 
+    }
+
+    public void setLlamadas(List<Llamada> llamadas) {
+        this.llamadas = llamadas;
+    }
+
+    public void restaurarDatos(){
+        GestorCache gestorCache = this.gestorCacheRepository.findById(1L).orElse(null);
+
+        this.llamadas = gestorCache.getLlamadas();
+        this.llamadaCliente = gestorCache.getLlamadaCliente();
+        this.fechaHoraActual = gestorCache.getFechaHoraActual();
+        this.descripcionOperador = gestorCache.getDescripcionOperador();
+        this.accionRequerida = gestorCache.getAccionRequerida();
     }
 }
