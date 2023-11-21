@@ -1,5 +1,8 @@
 package com.dsi.Entities;
 
+import com.dsi.Entities.patterns.EnCurso;
+import com.dsi.Entities.patterns.Finalizada;
+import com.dsi.Entities.patterns.Iniciada;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,8 +36,8 @@ public class CambioEstado
         this.estado = estado;
     }
 
-    public LocalDateTime getFechaHoraInicio()
-    {
+    public LocalDateTime getFechaHoraInicio() {
+
         return this.fechaHoraInicio;
     }
 

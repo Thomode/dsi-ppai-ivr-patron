@@ -1,5 +1,6 @@
 package com.dsi.Entities;
 
+import com.dsi.Entities.patterns.Iniciada;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -52,6 +53,7 @@ public class Llamada {
     @ManyToOne
     @JoinColumn(name = "accionRequerida")
     private Accion accionRequerida;
+
 
     public Llamada(Cliente cliente, List<CambioEstado> cambiosEstados, CategoriaLlamada categoriaLlamada, OpcionLlamada opcionSeleccionada, List<SubOpcionLlamada> subOpcionSeleccionada, Accion accionRequerida)
     {
@@ -218,5 +220,13 @@ public class Llamada {
     public void setAccionRequerida(Accion accionRequerida)
     {
         this.accionRequerida = accionRequerida;
+    }
+
+    public CambioEstado asignarEstadoEnCurso(LocalDateTime fechaHoraActual) {
+        Estado iniciada = new Iniciada();
+
+        CambioEstado cambioEstado = new CambioEstado(fechaHoraActual, null);
+
+        return cambioEstado;
     }
 }

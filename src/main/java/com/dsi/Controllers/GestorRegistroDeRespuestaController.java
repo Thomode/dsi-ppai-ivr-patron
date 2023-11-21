@@ -34,6 +34,8 @@ public class GestorRegistroDeRespuestaController
 
     @GetMapping("datos-llamada")
     public LlamadaDTO mostrarDatosLlamada() {
+        this.gestorRegistroDeRespuestaService.iniciar();
+
         return this.gestorRegistroDeRespuestaService.mostrarDatosLlamada();
     }
 
