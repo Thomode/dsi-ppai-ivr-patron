@@ -2,6 +2,7 @@ package com.dsi.services;
 
 import com.dsi.Dtos.*;
 import com.dsi.Entities.*;
+import com.dsi.Entities.patterns.Iniciada;
 import com.dsi.repositories.AccionRepository;
 import com.dsi.repositories.CambioEstadoRepository;
 import com.dsi.repositories.EstadoRepository;
@@ -28,11 +29,11 @@ public class GestorRegistroDeRespuestaService{
     private final AccionRepository accionRepository;
     private final CambioEstadoRepository cambioEstadoRepository;
     private final GestorCacheService gestorCacheService;
+    private Iniciada iniciada;
 
 
     @Autowired
-    public GestorRegistroDeRespuestaService(LlamadaRepository llamadaRepository, EstadoRepository estadoRepository, AccionRepository accionRepository, CambioEstadoRepository cambioEstadoRepository, GestorCacheService gestorCacheService)
-    {
+    public GestorRegistroDeRespuestaService(LlamadaRepository llamadaRepository, EstadoRepository estadoRepository, AccionRepository accionRepository, CambioEstadoRepository cambioEstadoRepository, GestorCacheService gestorCacheService) {
         this.llamadaRepository = llamadaRepository;
         this.estadoRepository = estadoRepository;
         this.accionRepository = accionRepository;
@@ -88,20 +89,9 @@ public class GestorRegistroDeRespuestaService{
     }
 
     public void asignarEstadoEnCurso() {
-        Estado estadoEnCurso = new Estado();
+        CambioEstado cambioEstadoNuevo = this.llamadaCliente.asignarEnCurso(this.fechaHoraActual);
 
-        List<Estado> estadoList = this.estadoRepository.findAll();
-
-        for (Estado estado : estadoList)
-        {
-            if (estado.esEstadoEnCurso())
-            {
-                estadoEnCurso = estado;
-            }
-        }
-
-        CambioEstado cambioEstado = this.llamadaCliente.asignarEstadoEnCurso(this.fechaHoraActual);
-        CambioEstado cambioEstadoSave = this.cambioEstadoRepository.save(cambioEstado);
+        CambioEstado cambioEstadoSave = this.cambioEstadoRepository.save(cambioEstadoNuevo);
 
         List<CambioEstado> cambioEstados = this.llamadaCliente.getCambiosEstados();
         cambioEstados.add(cambioEstadoSave);
@@ -265,22 +255,10 @@ public class GestorRegistroDeRespuestaService{
         this.llamadaRepository.save(this.llamadaCliente);
     }
 
-    public void asignarEstadoFinalizado()
-    {
-        Estado estadoEnCurso = new Estado();
+    public void asignarEstadoFinalizado() {
+        CambioEstado cambioEstadoNuevo = this.llamadaCliente.asignarFinalizada(this.fechaHoraActual);
 
-        List<Estado> estadoList = estadoRepository.findAll();
-
-        for (Estado estado : estadoList)
-        {
-            if (estado.esFinalizada())
-            {
-                estadoEnCurso = estado;
-            }
-        }
-
-        CambioEstado cambio = new CambioEstado(this.fechaHoraActual, estadoEnCurso);
-        CambioEstado cambioEstadoSave = this.cambioEstadoRepository.save(cambio);
+        CambioEstado cambioEstadoSave = this.cambioEstadoRepository.save(cambioEstadoNuevo);
 
         List<CambioEstado> cambioEstados = this.llamadaCliente.getCambiosEstados();
         cambioEstados.add(cambioEstadoSave);
@@ -290,13 +268,8 @@ public class GestorRegistroDeRespuestaService{
         this.llamadaRepository.save(this.llamadaCliente);
     }
 
-    public void finCU()
-    {
+    public void finCU() {
 
-    }
-
-    public void setLlamadas(List<Llamada> llamadas) {
-        this.llamadas = llamadas;
     }
 
     public void restaurarDatos(){

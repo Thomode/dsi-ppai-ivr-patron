@@ -45,6 +45,10 @@ public class CambioEstado
     {
         return this.estado.esIniciada();
     }
+    public boolean esEstadoEnCurso()
+    {
+        return this.estado.esEstadoEnCurso();
+    }
 
     // cambiar nombre en el diagrama
     public boolean esEstadoFinalizada()
@@ -55,5 +59,22 @@ public class CambioEstado
     public String getNombreEstado()
     {
         return this.estado.getNombre();
+    }
+
+    public CambioEstado asignarEnCurso(LocalDateTime fechaHoraActual) {
+        Iniciada iniciada = new Iniciada();
+
+        iniciada.setIdEstado(this.getIdCambioEstado());
+        iniciada.setNombre(this.getNombreEstado());
+
+        return iniciada.asignarEnCurso(fechaHoraActual);
+    }
+    public CambioEstado asignarFinalizada(LocalDateTime fechaHoraActual) {
+        EnCurso enCurso = new EnCurso();
+
+        enCurso.setIdEstado(this.getIdCambioEstado());
+        enCurso.setNombre(this.getNombreEstado());
+
+        return enCurso.asignarFinalizada(fechaHoraActual);
     }
 }

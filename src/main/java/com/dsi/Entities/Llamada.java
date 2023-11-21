@@ -222,11 +222,29 @@ public class Llamada {
         this.accionRequerida = accionRequerida;
     }
 
-    public CambioEstado asignarEstadoEnCurso(LocalDateTime fechaHoraActual) {
-        Estado iniciada = new Iniciada();
+    public CambioEstado asignarEnCurso(LocalDateTime fechaHoraActual) {
+        CambioEstado cambioEstadoNuevo = null ;
 
-        CambioEstado cambioEstado = new CambioEstado(fechaHoraActual, null);
+        for(CambioEstado cambioEstado: this.cambiosEstados){
+            if(cambioEstado.esEstadoInicial() && !cambioEstado.esEstadoFinalizada()){
+                cambioEstadoNuevo = cambioEstado.asignarEnCurso(fechaHoraActual);
+                break;
+            }
+        }
 
-        return cambioEstado;
+        return cambioEstadoNuevo;
+    }
+
+    public CambioEstado asignarFinalizada(LocalDateTime fechaHoraActual) {
+        CambioEstado cambioEstadoNuevo = null ;
+
+        for(CambioEstado cambioEstado: this.cambiosEstados){
+            if(cambioEstado.esEstadoEnCurso() && !cambioEstado.esEstadoFinalizada()){
+                cambioEstadoNuevo = cambioEstado.asignarFinalizada(fechaHoraActual);
+                break;
+            }
+        }
+
+        return cambioEstadoNuevo;
     }
 }

@@ -1,6 +1,7 @@
 package com.dsi.utils;
 
 import com.dsi.Entities.*;
+import com.dsi.Entities.patterns.Iniciada;
 import com.dsi.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,10 +38,12 @@ public class GeneradorDatos {
     private ClienteRepository clienteRepository;
 
     public Llamada agregarLlamada (){
-        Estado estado = estadoRepository.findByNombre("Iniciada");
+        Iniciada iniciada = new Iniciada();
+        iniciada.setIdEstado(1);
+        iniciada.setNombre("Iniciada");
 
-        CambioEstado cambioEstado = new CambioEstado(LocalDateTime.now(), estado);
-        cambioEstadoRepository.save(cambioEstado);
+        CambioEstado cambioEstado = new CambioEstado(LocalDateTime.now(), iniciada);
+        CambioEstado cambioEstadoSave = this.cambioEstadoRepository.save(cambioEstado);
 
         OpcionValidacion opcionValidacion1 = new OpcionValidacion(true, "1991");
         OpcionValidacion opcionValidacion2 = new OpcionValidacion(false, "1997");
@@ -173,7 +176,7 @@ public class GeneradorDatos {
         clienteRepository.save(cliente);
 
         List<CambioEstado> cambioEstados = new ArrayList<CambioEstado>();
-        cambioEstados.add(cambioEstado);
+        cambioEstados.add(cambioEstadoSave);
 
         List<SubOpcionLlamada> subOpcionLlamadas = new ArrayList<>();
         subOpcionLlamadas.add(subOpcionLlamada1);

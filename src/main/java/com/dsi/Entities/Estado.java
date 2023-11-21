@@ -3,12 +3,15 @@ package com.dsi.Entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
+@Table(name = "Estado")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "Estado")
 @AllArgsConstructor
 public class Estado
 {
@@ -47,5 +50,17 @@ public class Estado
     public boolean esEstadoCancelado()
     {
         return this.nombre.equals("Cancelada");
+    }
+
+    public CambioEstado asignarEnCurso(LocalDateTime fechaHoraActual){
+        return null;
+    }
+
+    public CambioEstado crearEstado(Integer idEstado, String nombre, LocalDateTime fechaHoraActual){
+        return null;
+    }
+
+    public CambioEstado asignarFinalizada(LocalDateTime fechaHoraActual){
+        return null;
     }
 }
